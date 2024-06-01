@@ -7,15 +7,13 @@ import axios from 'axios';
 import StaticAnalysis from './Components/StaticAnalysis';
 
 const App = () => {
-
-  
   const fileInputRef = useRef();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [file, setFile] = useState(null);
   const [apps, setApps] = useState([]);
   const [error, setError] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
+  const [response, setResponse] = useState()
   useEffect(() => {
     // Fetch available apps for dynamic analysis on component mount
     // scanApp();
@@ -92,15 +90,19 @@ const App = () => {
       const hashData = new URLSearchParams();
       hashData.append('hash', hash)
       const encodedData = hashData.toString()
-      const response = await axios.post('http://0.0.0.0:8000/api/v1/scan', encodedData, {
+      const resScan = await axios.post('http://0.0.0.0:8000/api/v1/scan', encodedData, {
         headers: {
           'Authorization': 'df3c7bb5420f8c4bbd502a49e0a1fed5670c117082da4da6fb72e2b7c6529c04',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
-      console.log('Available apps:', response.data);
-      setApps(response.data.apks || []);
-      
+      console.log(resScan.data)
+      setResponse(resScan)
+      // console.log('Available apps:', response.data);
+      setApps(resScan.data.activities || []);
+      console.log(resScan.data.activities);
+      // console.log(response.version)
+
     } catch (error) {
       console.error('Error fetching apps:', error);
       setApps([]);
@@ -180,12 +182,17 @@ const App = () => {
       <Row className="mt-4">
         <Col>
           <h4>Available Apps for Dynamic Analysis</h4>
-          <ul>
+            <li>Title {response && response.data.title}</li>
+          <ul><label>Activities</label>
             {apps.map((app, index) => (
               <li key={index}>
-                {app.APP_NAME} ({app.VERSION_NAME}) - {app.PACKAGE_NAME}
+                {app}
               </li>
             ))}
+            <li><b>Version</b> {response && response.data.version}</li>
+            <li><b>sha1</b> {response && response.data.sha1}</li>
+            <li><b>sha256</b> {response && response.data.sha256}</li>
+            <li><b>Size</b> {response && response.data.size}</li>
           </ul>
         </Col>
       </Row>
@@ -198,7 +205,9 @@ const App = () => {
         <a href="#" className="text-white mx-2">ABOUT</a>
         <p className="mt-3">© 2024 Mobile Security Framework - MobSF v4.0.2</p>
       </footer> */}
+      {/* {response && <StaticAnalysis data={response.data}></StaticAnalysis>} */}
     </Container>
+
   );
 };
 
