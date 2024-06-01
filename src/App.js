@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, ProgressBar, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'; // Assuming you have custom styles in App.css
+import './App.css';
 import { ReactComponent as UploadIcon } from './UploadIcon.svg'; // Import the SVG as a React component
 import axios from 'axios';
+import StaticAnalysis from './Components/StaticAnalysis';
 
 const App = () => {
+
+  
   const fileInputRef = useRef();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [file, setFile] = useState(null);
@@ -55,7 +58,7 @@ const App = () => {
 
       const response = await axios.post('http://0.0.0.0:8000/api/v1/upload', formData, {
         headers: {
-          'Authorization': '8c3e375b481f23e44ad6e4b3340c0fb346f10d1439ebac4ce493b94efd71e9e4',
+          'Authorization': 'df3c7bb5420f8c4bbd502a49e0a1fed5670c117082da4da6fb72e2b7c6529c04',
           'Content-Type': 'multipart/form-data',
         },
         onUploadProgress: (progressEvent) => {
@@ -91,7 +94,7 @@ const App = () => {
       const encodedData = hashData.toString()
       const response = await axios.post('http://0.0.0.0:8000/api/v1/scan', encodedData, {
         headers: {
-          'Authorization': '8c3e375b481f23e44ad6e4b3340c0fb346f10d1439ebac4ce493b94efd71e9e4',
+          'Authorization': 'df3c7bb5420f8c4bbd502a49e0a1fed5670c117082da4da6fb72e2b7c6529c04',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
