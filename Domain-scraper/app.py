@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-
+application = app
 def get_page_source(url):
     try:
         response = requests.get(url)
@@ -61,5 +61,9 @@ def get_transaction():
         return jsonify({'error': 'Unable to fetch data'}), 500
     return jsonify({'error': 'Hash parameter is required'}), 400
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({'Sucess': 'Hello World'}), 200
+
 if __name__ == '__main__':
-    app.run(debug=False, port=3000)
+    app.run(debug=True)
