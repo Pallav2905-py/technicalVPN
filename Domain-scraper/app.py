@@ -4,14 +4,6 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 application = app
-def get_page_source(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.text
-    except requests.exceptions.RequestException as e:
-        print(f'Error fetching page source: {e}')
-        return None
 
 def get_transactions(url):
     selector1 = 'a.link--underlined'
@@ -19,9 +11,9 @@ def get_transactions(url):
     time_selector = ".color-text-secondary time"
     balSelector = "span.wb-bw"
 
-    html = get_page_source(url)
+    html = requests.get(url)
     if html:
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html.text, 'html.parser')
         elements = soup.select(selector1)
         elements2 = soup.select(selector2)
         time_data = soup.select(time_selector)
