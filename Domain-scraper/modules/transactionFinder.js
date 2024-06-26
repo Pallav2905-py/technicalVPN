@@ -22,7 +22,11 @@ async function getPageSource(url) {
     }
 }
 
-async function getTransactions(url, selector = 'a' && '.link--underlined') {
+async function getTransactions(url) {
+    selector1 = 'a' && '.link--underlined'
+    selector2 = ".caption" && ".fs-sm"
+    timeSelector = ".color-text-secondary" && "time"
+    balSelector = ".wb-bw" && "span"
     try {
         // Lading the pageSource into cheerio
         const html = await getPageSource(url)
@@ -30,23 +34,33 @@ async function getTransactions(url, selector = 'a' && '.link--underlined') {
         if (html != null) {
             const $ = cheerio.load(html);
             // Select elements using the provided selector
-            const elements = $(selector);
+            const elements = $(selector1);
+            const elements2 = $(selector2);
+            const timeData = $(timeSelector);
             // Extract data from elements
             const data = [];
             elements.each((index, element) => {
                 data.push($(element).text().trim());
-                // console.log(index)
             });
-
+            const confirmations = []
+            elements2.each((index, element2) => {
+                confirmations.push($(element2).text().trim());
+            });
+            const time = []
+            timeData.each((index, timeData) => {
+                time.push($(timeData).text().trim());
+            });
             const result = [];
             for (let i = 2; i < data.length; i++) {
                 result.push({
                     Transaction: data[i],
+                    Confirmation: confirmations[i],
+                    Time: time[i],
                 });
             }
             return result;
         }
-        else{
+        else {
             return null;
         }
 
@@ -56,5 +70,11 @@ async function getTransactions(url, selector = 'a' && '.link--underlined') {
     }
 
 }
+// const url = "https://blockchair.com/search?q=TXk363ThKzQXQzPC1QQezkLgr3QajApArX"
+// async function main(params) {
 
+//     const data = await getTransactions(url);
+//     console.log(data);
+// }
+// main()
 module.exports = {getTransactions}
