@@ -10,6 +10,8 @@ async function getPageSource(url) {
         const page = await browser.newPage();
         // Navigate to the desired website
         await page.goto(url, { waitUntil: 'networkidle2' });
+        await page.waitForSelector('body');
+
         // Get the page content (HTML source)
         const pageSource = await page.content();
 
