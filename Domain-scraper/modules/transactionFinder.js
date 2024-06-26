@@ -1,28 +1,40 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const axios = require('axios')
+// async function getPageSource(url) {
+//     try {
+
+//         // Launch the browser
+//         const browser = await puppeteer.launch({ headless: true });
+//         // Open a new page
+//         const page = await browser.newPage();
+//         // Navigate to the desired website
+//         await page.goto(url, { waitUntil: 'networkidle2' });
+//         await page.waitForSelector('body');
+
+//         // Get the page content (HTML source)
+//         const pageSource = await page.content();
+
+//         // Close the browser
+//         await browser.close();
+
+//         return pageSource
+//     } catch (error) {
+//         return null;
+//     }
+// }
 
 async function getPageSource(url) {
     try {
-
-        // Launch the browser
-        const browser = await puppeteer.launch();
-        // Open a new page
-        const page = await browser.newPage();
-        // Navigate to the desired website
-        await page.goto(url, { waitUntil: 'networkidle2' });
-        await page.waitForSelector('body');
-
-        // Get the page content (HTML source)
-        const pageSource = await page.content();
-
-        // Close the browser
-        await browser.close();
-
-        return pageSource
+        // Fetch the HTML content of the webpage
+        const { data } = await axios.get(url);
+        return data;
     } catch (error) {
+        console.error('Error fetching page source:', error);
         return null;
     }
 }
+
 
 async function getTransactions(url) {
     selector1 = 'a' && '.link--underlined'
