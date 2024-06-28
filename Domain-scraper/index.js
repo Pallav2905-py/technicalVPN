@@ -4,6 +4,14 @@ const {getTransactions} = require('./modules/transactionFinder')
 const app = express()
 const port = 3000
 
+app.get("/", (req,res)=>{
+    try {
+        res.send("Server is Running.")
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 app.get('/sub-domain-finder', async (req, res) => {
     try {
         const url = "https://subdomainfinder.c99.nl/scans/" + req.query.url;

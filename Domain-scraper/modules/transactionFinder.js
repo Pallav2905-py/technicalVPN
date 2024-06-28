@@ -42,42 +42,11 @@ async function getPageSource(url) {
   }
 }
 
-// const getFinalUrl = async (initialUrl) => {
-//     try {
-//       const response = await axios.get(initialUrl, {
-//         maxRedirects: 5,
-//         timeout: 10000
-//       });
-//       return response.request.res.responseUrl;
-//     } catch (error) {
-//       console.error(`Error resolving final URL: ${error.message}`);
-//       return null;
-//     }
-//   };
-
-
-// async function getPageSource(url) {
-//   try {
-//     const response = await axios.get(url, {
-//       headers: {
-//         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-//         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-//       },
-//       timeout: 10000
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error(`Error scraping URL: ${error.message}`);
-//     return null;
-//   }
-// }
-
-
 async function getTransactions(url) {
   selector1 = 'a' && '.link--underlined'
   selector2 = ".caption" && ".fs-sm"
   timeSelector = ".color-text-secondary" && "time"
-  balSelector = ".wb-bw" && "span"
+  balSelector = "span.wb-bw"
   try {
     // Lading the pageSource into cheerio
     // const finalUrl = await getPageSource(url);
@@ -90,6 +59,7 @@ async function getTransactions(url) {
       const elements = $(selector1);
       const elements2 = $(selector2);
       const timeData = $(timeSelector);
+      const balData = $(balSelector);
       // Extract data from elements
       const data = [];
       elements.each((index, element) => {
@@ -103,14 +73,25 @@ async function getTransactions(url) {
       timeData.each((index, timeData) => {
         time.push($(timeData).text().trim());
       });
-      const result = [];
-      for (let i = 2; i < data.length; i++) {
-        result.push({
+      const bal = []
+      balData.each((index, balData) => {
+        bal.push($(balData).text().trim().replace(/\s+/g, ""));
+      });
+
+
+      const result = { Transaction: [], Amounts: [] };
+      for (let i = 0; i < data.length; i++) {
+        result.Transaction.push({
           Transaction: data[i],
           Confirmation: confirmations[i],
           Time: time[i],
+
         });
       }
+      for (let i = 0; i < balData.length ; i++) {
+        result.Amounts.push(bal[i]);
+      }
+
       return result;
     }
     else {
@@ -126,8 +107,8 @@ async function getTransactions(url) {
 // const url = "https://blockchair.com/search?q=TXk363ThKzQXQzPC1QQezkLgr3QajApArX"
 // async function main(params) {
 
-//     const data = await getTransactions(url);
-//     console.log(data);
+//   const data = await getTransactions(url);
+//   console.log(data);
 // }
 // main()
 module.exports = { getTransactions }
