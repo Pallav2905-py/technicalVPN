@@ -10,10 +10,11 @@ def get_transactions(url):
     selector2 = ".caption.fs-sm"
     time_selector = ".color-text-secondary time"
     balSelector = "span.wb-bw"
-
-    html = requests.get(url)
+    response = requests.get(url, allow_redirects=True, timeout=10)
+    response.raise_for_status()
+    html = response.text
     if html:
-        soup = BeautifulSoup(html.text, 'html.parser')
+        soup = BeautifulSoup(html, 'html.parser')
         elements = soup.select(selector1)
         elements2 = soup.select(selector2)
         time_data = soup.select(time_selector)
@@ -57,5 +58,5 @@ def get_transaction():
 def home():
     return jsonify({'Sucess': 'Hello World'}), 200
 
-# if __name__ == '__main__':
-    # app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
