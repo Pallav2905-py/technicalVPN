@@ -1,8 +1,14 @@
 const express = require('express')
 const { getSubDomains } = require('./modules/subDomainFinder')
 const {getTransactions} = require('./modules/transactionFinder')
+const cors = require('cors');
 const app = express()
 const port = 3000
+
+
+
+
+app.use(cors());
 
 app.get("/", (req,res)=>{
     try {
