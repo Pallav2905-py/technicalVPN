@@ -73,13 +73,23 @@ async function getTransactions(url) {
       timeData.each((index, timeData) => {
         time.push($(timeData).text().trim());
       });
+      const balance = []
       const bal = []
       balData.each((index, balData) => {
-        bal.push($(balData).text().trim().replace(/\s+/g, ""));
+      bal.push($(balData).text().trim().replace(/\s+/g, ""));
+        // if (!(balData.endsWith("TRX"))) {
+        //   balance.push(balData)
+        // }
       });
 
+      console.log(balance)
 
-      const result = { Transaction: [], Amounts: [] };
+      confirmations.splice(0, 2);
+
+      var accountBal = bal[0];
+      var accountBalInUSD = bal[1];
+
+      const result = { Transaction: [], Amounts: [], accountBal: null, accountBalInUSD: null };
       for (let i = 0; i < data.length; i++) {
         result.Transaction.push({
           Transaction: data[i],
@@ -88,9 +98,11 @@ async function getTransactions(url) {
 
         });
       }
-      for (let i = 0; i < balData.length ; i++) {
+      for (let i = 0; i < balData.length; i++) {
         result.Amounts.push(bal[i]);
       }
+      result.accountBal = accountBal;
+      result.accountBalInUSD = accountBalInUSD;
 
       return result;
     }
